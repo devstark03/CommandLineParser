@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-
 namespace StarKNET.CommandLine {
     public class CommandLineParser {
         private readonly List<string> _args;
@@ -16,19 +15,24 @@ namespace StarKNET.CommandLine {
             if (index >= 0 && _args.Count > index) {
                 return _args[index + 1];
             }
-
             index = _args.IndexOf("-" + shortKey);
-
             if (index >= 0 && _args.Count > index) {
                 return _args[index + 1];
             }
-
             return null;
         }
-
-        public bool GetSwitchArgument(string value) {
-            return _args.Contains("--" + value);
+        public int GetIntArgument(string key, char shortKey, int defaultValue = 0) {
+            var value = GetStringArgument(key, shortKey);
+            if (int.TryParse(value, out int result)) {
+                return result;
+            }
+            return defaultValue;
+        }
+        public bool GetSwitchArgument(string value, bool defaultValue = false) {
+            if (_args.Contains("--" + value)) {
+                return true;
+            }
+            return defaultValue;
         }
     }
-
 }
